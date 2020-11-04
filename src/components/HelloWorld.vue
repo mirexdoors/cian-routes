@@ -1,12 +1,11 @@
 <template>
-  <div>
-    Hello
-  </div>
+    <div>
+        Hello
+    </div>
 </template>
-
 
 <style scoped>
 p {
-  font-size: 20px;
+    font-size: 20px;
 }
 </style>

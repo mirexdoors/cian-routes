@@ -1,8 +1,8 @@
 # cian-routes
 
 ##TL;DR
- - check for cian.ru in background
+ - check for cian.ru in permission
  - popup with dadata inputs
- - save in firebase
+ - save in storage
  
 
