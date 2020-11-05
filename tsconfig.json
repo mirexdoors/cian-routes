@@ -15,7 +15,8 @@
     "baseUrl": ".",
     "types": [
       "webpack-env",
-      "firefox-webext-browser"
+      "firefox-webext-browser",
+      "chrome"
     ],
     "paths": {
       "@/*": [
