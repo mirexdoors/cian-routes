@@ -6,7 +6,7 @@
             {{ state.address }}
         </div>
         <div v-else class="info__inputWrapper">
-            <input class="info__input" type="search"/>
+            <input class="info__input" type="search" v-model="state.address" />
             <button
                 class="info__submit button"
                 type="button"
@@ -36,7 +36,7 @@
 </template>
 
 <script lang="ts">
-import {reactive, onMounted} from "vue";
+import { reactive, onMounted } from "vue";
 
 export default {
     name: "App",
@@ -49,19 +49,48 @@ export default {
         }
 
         const state: State = reactive({
-            address: "Москва итд",
+            address: "",
             isEdited: false,
             isCian: false
         });
-        onMounted(() => {
-            //get current tab
-            chrome.tabs.query(
-                { active: true, lastFocusedWindow: true },
-                tabs => (console.log(tabs),state.isCian = !!tabs[0].url)
+
+        const detectIsCian = async (): Promise<boolean> => {
+            return new Promise<boolean>(resolve =>
+                chrome.tabs.query(
+                    { active: true, lastFocusedWindow: true },
+                    tabs => {
+                        return resolve(tabs[0] && !!tabs[0].url);
+                    }
+                )
             );
+        };
+
+        const getAddress = async (): Promise<string> => {
+            return new Promise<string>(resolve => {
+                chrome.storage.sync.get("address", res => {
+                    resolve(res?.["address"] ? res["address"] : "");
+                });
+            });
+        };
+
+        const handleSubmit = (): void => {
+            chrome.storage.sync.set({ address: state.address });
+            state.isEdited = false;
+            return;
+        };
+
+        onMounted(() => {
+            //get current tab && check storage for address
+            (async () => {
+                state.isCian = await detectIsCian();
+                if (state.isCian) {
+                    state.address = await getAddress();
+                    if (!state.address) state.isEdited = true;
+                }
+            })();
         });
-        const handleSubmit = () => (state.isEdited = false);
-        return {state, handleSubmit};
+
+        return { state, handleSubmit };
     }
 };
 </script>
@@ -109,6 +138,7 @@ html {
     grid-row-gap: 2rem;
     width: 100%;
     text-align: center;
+
     &__header {
         font-size: 1rem;
         font-weight: 700;
