@@ -38,23 +38,23 @@
 <script lang="ts">
 import { reactive, onMounted } from "vue";
 
+interface State {
+    address: string;
+    isEdited: boolean;
+    isCian: boolean;
+}
+
 export default {
     name: "App",
     components: {},
     setup() {
-        interface State {
-            address: string;
-            isEdited: boolean;
-            isCian: boolean;
-        }
-
         const state: State = reactive({
             address: "",
             isEdited: false,
             isCian: false
         });
 
-        const detectIsCian = async (): Promise<boolean> => {
+        const detectIsCian = (): Promise<boolean> => {
             return new Promise<boolean>(resolve =>
                 chrome.tabs.query(
                     { active: true, lastFocusedWindow: true },
@@ -65,7 +65,7 @@ export default {
             );
         };
 
-        const getAddress = async (): Promise<string> => {
+        const getAddress = (): Promise<string> => {
             return new Promise<string>(resolve => {
                 chrome.storage.sync.get("address", res => {
                     resolve(res?.["address"] ? res["address"] : "");
@@ -73,7 +73,7 @@ export default {
             });
         };
 
-        const handleSubmit = (): void => {
+        const handleSubmit = () => {
             chrome.storage.sync.set({ address: state.address });
             state.isEdited = false;
             return;
