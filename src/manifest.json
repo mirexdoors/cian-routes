@@ -13,6 +13,14 @@
     "48": "icons/48.png",
     "128": "icons/128.png"
   },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.cian.ru/*"
+      ],
+      "js": ["js/content-script.js"]
+    }
+  ],
   "background": {
     "scripts": [
       "js/background.js"
